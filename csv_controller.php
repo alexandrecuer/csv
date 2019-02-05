@@ -87,13 +87,14 @@ function csv_controller() {
             $params = json_decode(file_get_contents('php://input'));
             if(!$params) return array('content' => "you have to specify a csv file and a column number");
             if(!$params->name) return array('content' => "not possible without a csv name");
-            if(!$params->feednbr) return array('content' => "not possible without a column number");
             $feednbr=(int) $params->feednbr;
-            if($feednbr<1) return array('content'=> "column number must be integer and more than 0"); 
+            if(!$params->feednbr) return array('content' => "not possible without a column number");
+            if($feednbr<1) return array('content'=> "column number must be integer and more than 0");
+            
             $fname = $csv_store."/".$params->name;
             if(!is_file($fname)) return array('content' => "this is not an existing file");
             
-            print("csv name: $params->name \n");
+            $result = "csv name: $params->name \n";
             
             $csv = new SplFileObject($fname);
             $csv->setFlags(SplFileObject::READ_CSV);
@@ -110,15 +111,14 @@ function csv_controller() {
             
             $writes=array_column($values,$feednbr);
             $nbpoints=count($writes);
-            print("column number in the csv: $feednbr \n-feed name: $name \n-start_time: $start_time \n-interval: $interval \n-nbpoints: $nbpoints \n");
-            print("We are about to create a PHPFINA feed in $dir \n");
+            $result.="column number in the csv: $feednbr \n-feed name: $name \n-start_time: $start_time \n-interval: $interval \n-nbpoints: $nbpoints \n";
             
             $name=preg_replace('/[^\p{N}\p{L}_\s-:]/u','',$name);
             $c = $feed->create($session['userid'],"csv",$name,DataType::REALTIME,Engine::PHPFINA,json_decode('{"interval":3600}'));
             if (!$c['success'])
                 return array('content'=>"feed could not be created");
             $id=$c['feedid'];
-            print("We have created a PHPFINA feed with number $id \n");
+            $result.="We have created a PHPFINA feed with number $id in dir $dir \n";
             if (!$fh = @fopen($dir.$id.".dat", 'ab')) return array('content'=>"ERROR: could not open $dir $id.dat");
             $buffer="";
             
@@ -132,7 +132,7 @@ function csv_controller() {
                 fclose($fh);
                 return array('content'=>"ERROR: unable to write to the file with id=$id");
             }
-            print("$written_bytes bytes written for $nbpoints float values \n");
+            $result.="$written_bytes bytes written for $nbpoints float values \n";
             $meta = new stdClass();
             $meta->interval=$interval;
             $meta->start_time=$start_time;
@@ -140,7 +140,7 @@ function csv_controller() {
                 return array('content'=>"meta could not be updated");
             fclose($fh);
             $route->format="text";
-            $result='so far so good, your feed has been created';
+            $result.='so far so good, your feed has been created';
         }
         
     }
