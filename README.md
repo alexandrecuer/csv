@@ -4,7 +4,7 @@ an EmonCMS module to import feeds from csv files
 ## install
 ```
 cd /var/www/emoncms/Modules
-git clone https://github.com/alexandrecuer/emoncms/csv.git
+git clone https://github.com/alexandrecuer/csv.git
 ```
 Create directory named csv_files in /home/pi/data
 
