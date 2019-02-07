@@ -1,6 +1,10 @@
 # emoncmsCSVmodule
 an EmonCMS module to import feeds from csv files
 
+in development
+
+TODO : implement the data transfer from csv to PHPFINA feed as background work for a shell worker being run by the EmoncCMS python service-runner
+
 ## install
 ```
 cd /var/www/emoncms/Modules
