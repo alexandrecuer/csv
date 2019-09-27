@@ -16,13 +16,13 @@ function createmeta($dir,$id,$meta)
 
 function csv_controller() {
 
-    global $homedir,$session,$route,$mysqli,$redis,$feed_settings;
+    global $homedir,$session,$route,$mysqli,$redis,$settings;
     if (!isset($homedir)) $homedir = "/home/pi";
-    $dir = $feed_settings["phpfina"]["datadir"];
+    $dir = $settings["feed"]["phpfina"]["datadir"];
     $csv_store=$homedir."/data/csv_files";
     
     include "Modules/feed/feed_model.php";
-    $feed = new Feed($mysqli,$redis,$feed_settings);
+    $feed = new Feed($mysqli,$redis,$settings["feed"]);
     
     // Default route format
     $route->format = 'json';
@@ -116,7 +116,7 @@ function csv_controller() {
             $name=preg_replace('/[^\p{N}\p{L}_\s-:]/u','',$name);
             $c = $feed->create($session['userid'],"csv",$name,DataType::REALTIME,Engine::PHPFINA,json_decode('{"interval":3600}'));
             if (!$c['success'])
-                return array('content'=>"feed could not be created");
+                return array('content'=>"feed could not be created in $dir");
             $id=$c['feedid'];
             $result.="We have created a PHPFINA feed with number $id in dir $dir \n";
             if (!$fh = @fopen($dir.$id.".dat", 'ab')) return array('content'=>"ERROR: could not open $dir $id.dat");

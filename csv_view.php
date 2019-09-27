@@ -1,8 +1,3 @@
-<?php 
-    global $path; 
-    $version = 1;
-?>
-
 <style>
 pre {
     width:100%;
@@ -35,7 +30,7 @@ pre {
 </div>
 
 <script>
-var path = "<?php echo $path; ?>";
+//console.warn(path);
 
 var csvs = [];
 $.ajax({ url: path+"csv/list", dataType: 'json', async: false, success: function(result) {csvs = result;} });
