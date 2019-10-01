@@ -81,7 +81,7 @@ $("#csv_select").change(function(){
         var params = {};
         params['name']=csvs[csv_id]['name'];
         params['feednbr']=feed_number;
-        console.log(params);
+        //console.warn(params);
         $.ajax({
             type: "POST",
             url: path+"csv/create", 
@@ -89,8 +89,8 @@ $("#csv_select").change(function(){
             dataType: 'text', 
             async: false, 
             success: function(result) {
-                //console.log(result);
                 $("#result").html(result);
+                //replace(/"|\\/g, '')
             } 
         });
     });
